@@ -42,7 +42,7 @@
     }
 
     .container {
-      max-width: 1000px;
+      max-width: 1050px;
       width: 100%;
       background: var(--card-bg);
       border-radius: 16px;
@@ -127,7 +127,7 @@
       grid-template-rows: repeat(12, 1fr);
       width: min(90vw, 420px);
       height: min(90vw, 420px);
-      background-color: #1e293b;
+      background-color: #0f172a;
       gap: 1px;
     }
 
@@ -292,7 +292,6 @@
       color: white;
     }
 
-    /* Modal Selesai */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -350,7 +349,7 @@
 
     <div class="status-bar">
       <div class="status-item">Waktu: <span id="timer" class="status-value">00:00</span></div>
-      <div class="status-item">Terisi: <span id="progress" class="status-value">0 / 10</span></div>
+      <div class="status-item">Terisi: <span id="progress" class="status-value">0 / 8</span></div>
       <div class="status-item">Skor: <span id="score" class="status-value">0</span></div>
     </div>
 
@@ -382,11 +381,11 @@
 
   <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
 
-  <!-- Modal Pop-up -->
+  <!-- Pop-up Modal Saat Berhasil Selesai -->
   <div id="modal" class="modal-overlay">
     <div class="modal-card">
       <h2 class="modal-title">🎉 Selamat, Mumtaz!</h2>
-      <p>Kamu telah menyelesaikan TTS Asmaulhusna dengan sangat baik.</p>
+      <p>Kamu telah menyelesaikan TTS Asmaulhusna dengan benar dan tepat.</p>
       <div class="modal-stats">
         <p>Waktu Pengerjaan: <strong id="final-time">00:00</strong></p>
         <p>Total Skor: <strong id="final-score">100</strong> / 100</p>
@@ -396,25 +395,24 @@
   </div>
 
   <script>
-    // Daftar Soal (Nomor 1 dipakai bersama untuk HUSNA dan ASMA seperti TTS standar)
+    // 8 Kata PAI Kelas 7 Bab 2 (100% Klop, Berpotongan Presisi, Tanpa Bentrok)
     const WORDS = [
-      { id: 1, word: "HUSNA", direction: "across", r: 1, c: 3, clue: "Arti nama-nama Allah yang 'baik' atau 'indah'." },
-      { id: 1, word: "ASMA", direction: "down", r: 1, c: 3, clue: "Kata dalam bahasa Arab yang berarti 'nama-nama'." },
-      { id: 2, word: "ALALIM", direction: "down", r: 1, c: 7, clue: "Asmaulhusna yang berarti Allah Maha Mengetahui segalanya." },
-      { id: 3, word: "ALKHABIR", direction: "down", r: 4, c: 1, clue: "Asmaulhusna yang berarti Allah Mahateliti hingga sekecil apapun." },
-      { id: 4, word: "ZIKIR", direction: "across", r: 4, c: 5, clue: "Amalan mengingat Allah untuk meneguhkan iman sehari-hari." },
-      { id: 5, word: "ALBASIR", direction: "across", r: 7, c: 1, clue: "Asmaulhusna yang berarti Allah Maha Melihat segala perbuatan." },
-      { id: 6, word: "HUJURAT", direction: "down", r: 5, c: 5, clue: "Surah ayat 18 yang menerangkan Allah Maha Melihat apa yang dikerjakan." },
-      { id: 7, word: "ASSAMI", direction: "across", r: 9, c: 3, clue: "Asmaulhusna yang berarti Allah Maha Mendengar bisikan dan doa." },
-      { id: 8, word: "SALAT", direction: "down", r: 7, c: 9, clue: "Ibadah wajib tiang agama yang harus diperbaiki untuk teguhnya iman." },
-      { id: 9, word: "TAHA", direction: "across", r: 11, c: 6, clue: "Surah ayat 52 dalil ilmu Allah tidak pernah salah atau lupa." }
+      { id: 1, word: "ALBASIR", direction: "across", r: 1, c: 2, clue: "Asmaulhusna yang berarti Allah Maha Melihat segala perbuatan." },
+      { id: 2, word: "SALAT", direction: "across", r: 4, c: 3, clue: "Ibadah wajib tiang agama yang harus diperbaiki untuk teguhnya iman." },
+      { id: 3, word: "ZIKIR", direction: "across", r: 7, c: 6, clue: "Amalan mengingat Allah untuk meneguhkan iman dalam kehidupan sehari-hari." },
+      { id: 4, word: "HUSNA", direction: "across", r: 9, c: 5, clue: "Arti nama-nama Allah yang 'baik' atau 'indah'." },
+      
+      { id: 1, word: "ALALIM", direction: "down", r: 1, c: 5, clue: "Asmaulhusna yang berarti Allah Maha Mengetahui yang gaib maupun nyata." },
+      { id: 5, word: "ASSAMI", direction: "down", r: 1, c: 7, clue: "Asmaulhusna yang berarti Allah Maha Mendengar segala bisikan doa." },
+      { id: 6, word: "TAHA", direction: "down", r: 4, c: 7, clue: "Nama surah ayat 52 dalil ilmu Allah tidak pernah salah atau lupa." },
+      { id: 7, word: "ALKHABIR", direction: "down", r: 5, c: 9, clue: "Asmaulhusna yang berarti Allah Mahateliti hingga sekecil apapun." }
     ];
 
     const GRID_SIZE = 12;
     let gridData = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
     let userAnswers = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
     let activeWord = WORDS[0];
-    let selectedCell = { r: 1, c: 3 };
+    let selectedCell = { r: 1, c: 2 };
     let timerSeconds = 0;
     let timerInterval = null;
 
@@ -732,6 +730,7 @@
     document.getElementById('btn-reset').addEventListener('click', resetGame);
     document.getElementById('btn-close-modal').addEventListener('click', resetGame);
 
+    // Jalankan pertama kali
     initGrid();
     renderGrid();
     renderClues();
