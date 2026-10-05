@@ -57,13 +57,11 @@
       color: white;
       padding: 20px 24px;
       text-align: center;
-      position: relative;
     }
 
     header h1 {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       margin-bottom: 6px;
-      letter-spacing: -0.5px;
     }
 
     header p {
@@ -167,9 +165,9 @@
       position: absolute;
       top: 2px;
       left: 3px;
-      font-size: 8px;
-      font-weight: 700;
-      color: #475569;
+      font-size: 10px;
+      font-weight: 800;
+      color: #1e293b;
       pointer-events: none;
       line-height: 1;
     }
@@ -244,7 +242,7 @@
     .clue-num {
       font-weight: 800;
       color: var(--primary);
-      min-width: 20px;
+      min-width: 22px;
     }
 
     .clue-text {
@@ -256,7 +254,7 @@
       flex-wrap: wrap;
       gap: 10px;
       justify-content: center;
-      padding: 12px 20px 20px;
+      padding: 14px 20px 20px;
       background: white;
       border-top: 1px solid #e2e8f0;
     }
@@ -272,7 +270,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: transform 0.1s, opacity 0.2s;
+      transition: transform 0.1s;
     }
 
     .btn:active {
@@ -333,7 +331,6 @@
       font-size: 0.95rem;
     }
 
-    /* Input Tersembunyi untuk Keyboard Mobile */
     #hidden-input {
       position: absolute;
       opacity: 0;
@@ -385,7 +382,7 @@
 
   <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
 
-  <!-- Modal Pop-up Selesai -->
+  <!-- Modal Pop-up -->
   <div id="modal" class="modal-overlay">
     <div class="modal-card">
       <h2 class="modal-title">🎉 Selamat, Mumtaz!</h2>
@@ -399,9 +396,10 @@
   </div>
 
   <script>
-    // Konfigurasi 10 Kata dan Soal (Berdasarkan Buku PAI Kelas 7 Bab 2)
+    // Daftar Soal (Nomor 1 dipakai bersama untuk HUSNA dan ASMA seperti TTS standar)
     const WORDS = [
       { id: 1, word: "HUSNA", direction: "across", r: 1, c: 3, clue: "Arti nama-nama Allah yang 'baik' atau 'indah'." },
+      { id: 1, word: "ASMA", direction: "down", r: 1, c: 3, clue: "Kata dalam bahasa Arab yang berarti 'nama-nama'." },
       { id: 2, word: "ALALIM", direction: "down", r: 1, c: 7, clue: "Asmaulhusna yang berarti Allah Maha Mengetahui segalanya." },
       { id: 3, word: "ALKHABIR", direction: "down", r: 4, c: 1, clue: "Asmaulhusna yang berarti Allah Mahateliti hingga sekecil apapun." },
       { id: 4, word: "ZIKIR", direction: "across", r: 4, c: 5, clue: "Amalan mengingat Allah untuk meneguhkan iman sehari-hari." },
@@ -409,8 +407,7 @@
       { id: 6, word: "HUJURAT", direction: "down", r: 5, c: 5, clue: "Surah ayat 18 yang menerangkan Allah Maha Melihat apa yang dikerjakan." },
       { id: 7, word: "ASSAMI", direction: "across", r: 9, c: 3, clue: "Asmaulhusna yang berarti Allah Maha Mendengar bisikan dan doa." },
       { id: 8, word: "SALAT", direction: "down", r: 7, c: 9, clue: "Ibadah wajib tiang agama yang harus diperbaiki untuk teguhnya iman." },
-      { id: 9, word: "TAHA", direction: "across", r: 11, c: 6, clue: "Surah ayat 52 dalil ilmu Allah tidak pernah salah atau lupa." },
-      { id: 10, word: "ASMA", direction: "down", r: 1, c: 3, clue: "Kata dalam bahasa Arab yang berarti 'nama-nama'." }
+      { id: 9, word: "TAHA", direction: "across", r: 11, c: 6, clue: "Surah ayat 52 dalil ilmu Allah tidak pernah salah atau lupa." }
     ];
 
     const GRID_SIZE = 12;
@@ -421,7 +418,6 @@
     let timerSeconds = 0;
     let timerInterval = null;
 
-    // Inisialisasi Peta Kotak
     function initGrid() {
       WORDS.forEach(w => {
         let { r, c, direction, word, id } = w;
@@ -436,13 +432,14 @@
               clueNumber: (i === 0) ? id : null
             };
           }
-          if (i === 0) gridData[currR][currC].clueNumber = id;
+          if (i === 0 && !gridData[currR][currC].clueNumber) {
+            gridData[currR][currC].clueNumber = id;
+          }
           gridData[currR][currC].words.push(w);
         }
       });
     }
 
-    // Render Grid HTML
     function renderGrid() {
       const gridEl = document.getElementById('grid');
       gridEl.innerHTML = '';
@@ -478,17 +475,16 @@
       updateHighlights();
     }
 
-    // Render Daftar Petunjuk Soal
     function renderClues() {
       const acrossList = document.getElementById('across-clues');
       const downList = document.getElementById('down-clues');
       acrossList.innerHTML = '';
       downList.innerHTML = '';
 
-      WORDS.forEach(w => {
+      WORDS.forEach((w, index) => {
         const item = document.createElement('li');
         item.className = 'clue-item';
-        item.dataset.id = w.id;
+        item.dataset.wordIndex = index;
         item.innerHTML = `<span class="clue-num">${w.id}.</span><span class="clue-text">${w.clue} (${w.word.length} huruf)</span>`;
         item.addEventListener('click', () => selectWord(w));
 
@@ -505,14 +501,12 @@
       if (!cellData) return;
 
       if (selectedCell.r === r && selectedCell.c === c) {
-        // Ganti arah kata jika ada dua kata beririsan di sel ini
         if (cellData.words.length > 1) {
-          activeWord = (activeWord.id === cellData.words[0].id) ? cellData.words[1] : cellData.words[0];
+          activeWord = (activeWord === cellData.words[0]) ? cellData.words[1] : cellData.words[0];
         }
       } else {
         selectedCell = { r, c };
-        // Pastikan activeWord cocok dengan sel yang diklik
-        const match = cellData.words.find(w => w.id === activeWord.id);
+        const match = cellData.words.find(w => w === activeWord);
         if (!match) activeWord = cellData.words[0];
       }
 
@@ -536,14 +530,13 @@
         el.classList.remove('active');
       });
 
-      // Tandai daftar petunjuk yang aktif
-      const activeClueEl = document.querySelector(`.clue-item[data-id="${activeWord.id}"]`);
+      const activeIndex = WORDS.indexOf(activeWord);
+      const activeClueEl = document.querySelector(`.clue-item[data-word-index="${activeIndex}"]`);
       if (activeClueEl) {
         activeClueEl.classList.add('active');
         activeClueEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
-      // Tandai sel-sel dalam kata yang aktif
       for (let i = 0; i < activeWord.word.length; i++) {
         let r = activeWord.direction === 'across' ? activeWord.r : activeWord.r + i;
         let c = activeWord.direction === 'across' ? activeWord.c + i : activeWord.c;
@@ -551,7 +544,6 @@
         if (cellEl) cellEl.classList.add('highlighted');
       }
 
-      // Tandai sel kursor aktif
       const currentCellEl = document.querySelector(`.cell[data-r="${selectedCell.r}"][data-c="${selectedCell.c}"]`);
       if (currentCellEl) currentCellEl.classList.add('selected');
     }
@@ -577,7 +569,6 @@
       let nextR = activeWord.direction === 'across' ? r : r + step;
       let nextC = activeWord.direction === 'across' ? c + step : c;
 
-      // Cek apakah posisi berikutnya masih dalam kata aktif
       const startR = activeWord.r;
       const startC = activeWord.c;
       const len = activeWord.word.length;
@@ -592,7 +583,6 @@
       }
     }
 
-    // Input Handling (Keyboard Fisik & Virtual)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace') {
         e.preventDefault();
@@ -629,7 +619,6 @@
       }
     });
 
-    // Menangani Mobile Input
     const hiddenInput = document.getElementById('hidden-input');
     hiddenInput.addEventListener('input', (e) => {
       const val = e.target.value;
@@ -643,7 +632,6 @@
       hiddenInput.value = '';
     });
 
-    // Fitur Cek Jawaban
     function checkAnswers() {
       let totalLetters = 0;
       let correctLetters = 0;
@@ -684,7 +672,6 @@
       }
     }
 
-    // Buka 1 Huruf (Hint)
     function giveHint() {
       const { r, c } = selectedCell;
       if (gridData[r][c]) {
@@ -696,7 +683,6 @@
       }
     }
 
-    // Update Progres Kata yang Selesai
     function updateProgress() {
       let completedWords = 0;
       WORDS.forEach(w => {
@@ -714,7 +700,6 @@
       document.getElementById('progress').textContent = `${completedWords} / ${WORDS.length}`;
     }
 
-    // Timer
     function startTimer() {
       clearInterval(timerInterval);
       timerSeconds = 0;
@@ -726,7 +711,6 @@
       }, 1000);
     }
 
-    // Reset Game
     function resetGame() {
       userAnswers = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
       document.querySelectorAll('.cell.playable').forEach(el => {
@@ -743,13 +727,11 @@
       startTimer();
     }
 
-    // Tombol Event Listener
     document.getElementById('btn-check').addEventListener('click', checkAnswers);
     document.getElementById('btn-hint').addEventListener('click', giveHint);
     document.getElementById('btn-reset').addEventListener('click', resetGame);
     document.getElementById('btn-close-modal').addEventListener('click', resetGame);
 
-    // Jalankan Saat Pertama Dimuat
     initGrid();
     renderGrid();
     renderClues();
