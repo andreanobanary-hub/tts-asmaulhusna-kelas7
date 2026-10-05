@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Game PAI Kelas 7 - Meneladani Asmaulhusna</title>
+  <title>Game Susun Kata PAI Kelas 7 - Asmaulhusna</title>
   <style>
     :root {
       --primary: #065f46;
@@ -56,9 +56,10 @@
     }
 
     header h1 {
-      font-size: 1.45rem;
+      font-size: 1.4rem;
       margin-bottom: 6px;
       font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     header p {
@@ -84,7 +85,7 @@
       padding: 24px 20px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       min-height: 380px;
     }
 
@@ -109,13 +110,12 @@
     }
 
     .question-text {
-      font-size: 1.15rem;
+      font-size: 1.12rem;
       font-weight: 600;
       color: #1e293b;
       line-height: 1.5;
     }
 
-    /* Slot Huruf Jawaban */
     .answer-slots {
       display: flex;
       justify-content: center;
@@ -146,13 +146,12 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    /* Pilihan Huruf Acak */
     .letters-container {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 10px;
+      margin-top: 6px;
     }
 
     .letter-btn {
@@ -204,7 +203,7 @@
 
     .btn {
       padding: 10px 18px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       border-radius: 10px;
       border: none;
@@ -223,7 +222,6 @@
     .btn-secondary { background: #e2e8f0; color: #334155; }
     .btn-accent { background: var(--accent); color: white; }
 
-    /* Modal Selesai */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -270,9 +268,9 @@
     </header>
 
     <div class="status-bar">
-      <div>Soal: <span id="soal-num" class="status-val">1 / 8</span></div>
+      <div>Soal: <span id="soal-num" class="status-val">1 / 10</span></div>
       <div>Waktu: <span id="timer" class="status-val">00:00</span></div>
-      <div>Skor: <span id="score" class="status-val">0</span></div>
+      <div>Skor: <span id="score" class="status-val">0</span> / 100</div>
     </div>
 
     <div class="game-body">
@@ -281,12 +279,8 @@
         <div id="question-text" class="question-text">Memuat pertanyaan...</div>
       </div>
 
-      <!-- Kotak Isian Huruf -->
       <div id="answer-slots" class="answer-slots"></div>
-
-      <!-- Kotak Huruf Acak Pilihan -->
       <div id="letters-container" class="letters-container"></div>
-
       <div id="feedback" class="feedback"></div>
     </div>
 
@@ -297,60 +291,69 @@
     </div>
   </div>
 
-  <!-- Pop Up Hasil Akhir -->
   <div id="modal-selesai" class="modal-overlay">
     <div class="modal-card">
-      <h2>🎉 Mumtaz! Hebat Sekali!</h2>
-      <p>Kamu telah menuntaskan seluruh tantangan materi Meneladani Asmaulhusna.</p>
+      <h2>🎉 Mumtaz! Luar Biasa!</h2>
+      <p>Kamu telah berhasil menuntaskan seluruh 10 soal Asmaulhusna dengan sangat baik.</p>
       <div class="modal-score">
-        <p>Total Skor: <strong id="final-score" style="color:var(--primary); font-size:1.4rem;">0</strong> / 100</p>
-        <p>Waktu: <strong id="final-time">00:00</strong></p>
+        <p>Total Skor: <strong id="final-score" style="color:var(--primary); font-size:1.5rem;">0</strong> / 100</p>
+        <p>Waktu Pengerjaan: <strong id="final-time">00:00</strong></p>
       </div>
       <button id="btn-main-lagi" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">Mainkan Lagi</button>
     </div>
   </div>
 
   <script>
-    // Bank Soal Materi PAI Kelas 7 Bab 2 (Asmaulhusna & Pengamalannya)
+    // 10 Soal Lengkap Materi PAI Kelas 7 Bab 2 (Asmaulhusna)
     const QUESTIONS = [
       {
         tag: "Asmaulhusna 1",
-        question: "Asmaulhusna yang berarti Allah Maha Mengetahui segala sesuatu, baik yang tampak maupun gaib (Q.S. Taha: 52):",
+        question: "Asmaulhusna yang berarti Allah Maha Mengetahui yang tampak maupun yang gaib (Q.S. Taha [20]: 52):",
         answer: "ALALIM"
       },
       {
         tag: "Asmaulhusna 2",
-        question: "Asmaulhusna yang berarti Allah Mahateliti hingga sekecil apapun perbuatan makhluk-Nya (Q.S. At-Taubah: 16):",
+        question: "Asmaulhusna yang berarti Allah Mahateliti hingga rincian amal terkecil makhluk-Nya (Q.S. At-Taubah [9]: 16):",
         answer: "ALKHABIR"
       },
       {
         tag: "Asmaulhusna 3",
-        question: "Asmaulhusna yang berarti Allah Maha Mendengar segala bisikan hati, rintihan doa, dan ucapan (Q.S. Asy-Syura: 11):",
+        question: "Asmaulhusna yang berarti Allah Maha Mendengar segala bisikan batin dan permohonan doa (Q.S. Asy-Syura [42]: 11):",
         answer: "ASSAMI"
       },
       {
         tag: "Asmaulhusna 4",
-        question: "Asmaulhusna yang berarti Allah Maha Melihat segala gerak-gerik makhluk tanpa terkecuali (Q.S. Al-Hujurat: 18):",
+        question: "Asmaulhusna yang berarti Allah Maha Melihat segala perbuatan dan gerak-gerik makhluk (Q.S. Al-Hujurat [49]: 18):",
         answer: "ALBASIR"
       },
       {
-        tag: "Makna Bahasa",
-        question: "Arti dari kata 'Husna' dalam ungkapan Asmaulhusna adalah nama-nama yang:",
+        tag: "Bahasa & Makna",
+        question: "Kata dalam bahasa Arab dari 'Asma' yang merupakan bentuk jamak dari 'Ismun', memiliki arti:",
+        answer: "NAMA"
+      },
+      {
+        tag: "Bahasa & Makna",
+        question: "Arti dari kata 'Husna' dalam ungkapan Asmaulhusna adalah yang paling baik atau paling:",
         answer: "INDAH"
       },
       {
-        tag: "Makna Bahasa",
-        question: "Kata dalam bahasa Arab yang berarti 'nama-nama':",
-        answer: "ASMA"
+        tag: "Dalil Al-Qur'an",
+        question: "Nama surah ayat 18 yang menjadi dalil bahwa Allah Maha Melihat apa yang kamu kerjakan:",
+        answer: "ALHUJURAT"
       },
       {
-        tag: "Pengamalan",
-        question: "Ibadah wajib tiang agama yang harus diperbaiki untuk meneguhkan keimanan sehari-hari:",
+        tag: "Kitab Catatan Takdir",
+        question: "Kitab tempat tertulisnya segala rahasia takdir ciptaan Allah sebelum terciptanya dunia adalah Lauh:",
+        answer: "MAHFUZ"
+      },
+      {
+        tag: "Pengamalan Sehari-hari",
+        question: "Ibadah wajib tiang agama yang harus diperbaiki untuk meneguhkan keimanan kepada Allah Swt.:",
         answer: "SALAT"
       },
       {
-        tag: "Pengamalan",
-        question: "Amalan memperbanyak mengingat nama dan kebesaran Allah Swt. untuk meneguhkan iman:",
+        tag: "Pengamalan Sehari-hari",
+        question: "Amalan memperbanyak mengingat Allah dalam kehidupan sehari-hari guna meneguhkan iman:",
         answer: "ZIKIR"
       }
     ];
@@ -393,7 +396,6 @@
       answerSlotsEl.innerHTML = '';
       lettersContainerEl.innerHTML = '';
 
-      // Siapkan slot jawaban kosong
       for (let i = 0; i < q.answer.length; i++) {
         const slot = document.createElement('div');
         slot.className = 'slot';
@@ -402,7 +404,6 @@
         answerSlotsEl.appendChild(slot);
       }
 
-      // Acak huruf-huruf dari jawaban
       scrambledLetters = shuffle(q.answer.split('')).map((char, i) => ({ id: i, char: char, used: false }));
 
       scrambledLetters.forEach(item => {
@@ -427,7 +428,6 @@
 
       updateSlots();
 
-      // Jika semua slot sudah terisi, cek otomatis
       if (currentInputs.length === q.answer.length) {
         checkAnswer();
       }
@@ -469,7 +469,7 @@
       if (userWord === q.answer) {
         feedbackEl.textContent = '✓ Benar Sekali! Jawaban Tepat!';
         feedbackEl.className = 'feedback correct';
-        score += Math.round(100 / QUESTIONS.length);
+        score += 10; // Tiap soal bernilai 10 poin (10 x 10 = 100)
         scoreEl.textContent = score;
 
         setTimeout(() => {
@@ -490,18 +490,14 @@
       const q = QUESTIONS[currentIndex];
       const correctWord = q.answer;
 
-      // Cari posisi pertama yang salah atau kosong
       for (let i = 0; i < correctWord.length; i++) {
         const expectedChar = correctWord[i];
         const currentChar = currentInputs[i] ? currentInputs[i].char : null;
 
         if (currentChar !== expectedChar) {
-          // Reset huruf yang salah di posisi ini dan setelahnya
           while (currentInputs.length > i) {
             deleteLastLetter();
           }
-
-          // Cari tombol huruf yang sesuai dan belum terpakai
           const candidate = scrambledLetters.find(l => !l.used && l.char === expectedChar);
           if (candidate) {
             selectLetter(candidate);
@@ -538,7 +534,6 @@
       startTimer();
     }
 
-    // Keyboard support
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Backspace') {
         deleteLastLetter();
@@ -554,7 +549,6 @@
     document.getElementById('btn-reset').addEventListener('click', resetGame);
     document.getElementById('btn-main-lagi').addEventListener('click', resetGame);
 
-    // Jalankan Game
     resetGame();
   </script>
 </body>
