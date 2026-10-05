@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>TTS PAI Kelas 7 - Meneladani Asmaulhusna</title>
+  <title>Game PAI Kelas 7 - Meneladani Asmaulhusna</title>
   <style>
     :root {
       --primary: #065f46;
@@ -11,14 +11,12 @@
       --primary-dark: #064e3b;
       --accent: #d97706;
       --accent-light: #fef3c7;
-      --bg: #f8fafc;
+      --bg: #f1f5f9;
       --card-bg: #ffffff;
-      --text: #1e293b;
-      --grid-border: #334155;
-      --active-cell: #fde047;
-      --highlight-word: #fef08a;
-      --correct: #86efac;
-      --wrong: #fca5a5;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --correct: #22c55e;
+      --wrong: #ef4444;
     }
 
     * {
@@ -26,26 +24,25 @@
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
       background-color: var(--bg);
       color: var(--text);
-      line-height: 1.5;
-      padding: 16px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      padding: 16px;
     }
 
     .container {
-      max-width: 980px;
+      max-width: 760px;
       width: 100%;
       background: var(--card-bg);
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.07);
       overflow: hidden;
       display: flex;
       flex-direction: column;
@@ -54,230 +51,182 @@
     header {
       background: linear-gradient(135deg, var(--primary-dark), var(--primary));
       color: white;
-      padding: 20px 24px;
+      padding: 22px 20px;
       text-align: center;
     }
 
     header h1 {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       margin-bottom: 6px;
+      font-weight: 800;
     }
 
     header p {
       font-size: 0.9rem;
-      opacity: 0.9;
+      opacity: 0.92;
     }
 
     .status-bar {
       display: flex;
       justify-content: space-around;
       background: #e2e8f0;
-      padding: 10px 16px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border-bottom: 1px solid #cbd5e1;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-bottom: 2px solid #cbd5e1;
     }
 
-    .status-value {
+    .status-val {
       color: var(--primary);
     }
 
-    .main-content {
+    .game-body {
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       gap: 20px;
-      padding: 20px;
+      min-height: 380px;
     }
 
-    @media (min-width: 820px) {
-      .main-content {
-        flex-direction: row;
-        align-items: flex-start;
-      }
+    .question-box {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
     }
 
-    .grid-container {
-      flex: 1;
+    .clue-badge {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .question-text {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #1e293b;
+      line-height: 1.5;
+    }
+
+    /* Slot Huruf Jawaban */
+    .answer-slots {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 320px;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
     }
 
-    .grid-wrapper {
-      position: relative;
-      background: #cbd5e1;
-      border: 3px solid var(--grid-border);
+    .slot {
+      width: 44px;
+      height: 48px;
+      border: 2px dashed #94a3b8;
       border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(11, 1fr);
-      grid-template-rows: repeat(11, 1fr);
-      width: min(90vw, 400px);
-      height: min(90vw, 400px);
-      background-color: #0f172a;
-      gap: 1px;
-    }
-
-    .cell {
-      position: relative;
-      background-color: #0f172a;
       display: flex;
       align-items: center;
       justify-content: center;
-      user-select: none;
-    }
-
-    .cell.playable {
-      background-color: #ffffff;
-      cursor: pointer;
-    }
-
-    .cell.playable.highlighted {
-      background-color: var(--highlight-word);
-    }
-
-    .cell.playable.selected {
-      background-color: var(--active-cell);
-    }
-
-    .cell.correct {
-      background-color: var(--correct) !important;
-    }
-
-    .cell.wrong {
-      background-color: var(--wrong) !important;
-    }
-
-    .cell-number {
-      position: absolute;
-      top: 2px;
-      left: 3px;
-      font-size: 10px;
+      font-size: 1.35rem;
       font-weight: 800;
-      color: #1e293b;
-      pointer-events: none;
-      line-height: 1;
-    }
-
-    .cell-letter {
-      font-size: clamp(14px, 3.5vw, 19px);
-      font-weight: 800;
-      color: #0f172a;
-      text-transform: uppercase;
-      pointer-events: none;
-    }
-
-    .clues-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      max-height: 480px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .clue-section {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      padding: 12px 14px;
-    }
-
-    .clue-section h3 {
-      font-size: 0.95rem;
-      color: var(--primary);
-      margin-bottom: 8px;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 4px;
-    }
-
-    .clue-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .clue-item {
-      padding: 7px 9px;
-      border-radius: 6px;
-      font-size: 0.84rem;
-      line-height: 1.35;
-      cursor: pointer;
       background: white;
-      border: 1px solid #e2e8f0;
+      color: var(--primary-dark);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .slot.filled {
+      border: 2px solid var(--primary);
+      background: #ecfdf5;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* Pilihan Huruf Acak */
+    .letters-container {
       display: flex;
-      gap: 6px;
-      transition: background 0.15s;
-    }
-
-    .clue-item:hover {
-      background: var(--accent-light);
-    }
-
-    .clue-item.active {
-      background: var(--highlight-word);
-      border-color: #ca8a04;
-      font-weight: 600;
-    }
-
-    .clue-num {
-      font-weight: 800;
-      color: var(--primary);
-      min-width: 20px;
-    }
-
-    .controls {
-      display: flex;
+      justify-content: center;
       flex-wrap: wrap;
       gap: 10px;
+      margin-top: 10px;
+    }
+
+    .letter-btn {
+      width: 46px;
+      height: 50px;
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #334155;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
       justify-content: center;
-      padding: 14px 20px 20px;
-      background: white;
+      transition: all 0.15s;
+      box-shadow: 0 3px 0 #94a3b8;
+    }
+
+    .letter-btn:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #94a3b8;
+    }
+
+    .letter-btn.used {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .feedback {
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 700;
+      min-height: 28px;
+    }
+
+    .feedback.correct { color: var(--correct); }
+    .feedback.wrong { color: var(--wrong); }
+
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
       border-top: 1px solid #e2e8f0;
+      padding: 16px 20px;
+      background: white;
     }
 
     .btn {
-      border: none;
       padding: 10px 18px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 10px;
+      border: none;
       cursor: pointer;
-      transition: transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: opacity 0.2s, transform 0.1s;
     }
 
     .btn:active {
       transform: scale(0.97);
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-secondary { background: #e2e8f0; color: #334155; }
+    .btn-accent { background: var(--accent); color: white; }
 
-    .btn-secondary {
-      background: #e2e8f0;
-      color: #334155;
-    }
-
-    .btn-accent {
-      background: var(--accent);
-      color: white;
-    }
-
+    /* Modal Selesai */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background: rgba(0,0,0,0.6);
       display: none;
       align-items: center;
@@ -288,34 +237,27 @@
 
     .modal-card {
       background: white;
-      border-radius: 16px;
-      padding: 28px;
-      max-width: 400px;
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 440px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 20px 25px rgba(0,0,0,0.2);
+      box-shadow: 0 20px 30px rgba(0,0,0,0.25);
     }
 
-    .modal-title {
+    .modal-card h2 {
       color: var(--primary);
-      font-size: 1.35rem;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-size: 1.6rem;
     }
 
-    .modal-stats {
-      margin: 16px 0;
-      padding: 12px;
+    .modal-score {
+      font-size: 1.1rem;
       background: #f1f5f9;
-      border-radius: 8px;
-      font-size: 0.95rem;
-    }
-
-    #hidden-input {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      top: -9999px;
-      left: -9999px;
+      padding: 16px;
+      border-radius: 12px;
+      margin: 18px 0;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -323,357 +265,250 @@
 
   <div class="container">
     <header>
-      <h1>TEKA-TEKI SILANG PAI KELAS VII</h1>
-      <p>Bab 2: Meneladani Asmaulhusna (Al-'Alīm, Al-Khabīr, As-Samī', Al-Baṣīr)</p>
+      <h1>PETUALANGAN ASMAULHUSNA</h1>
+      <p>PAI & Budi Pekerti Kelas 7 SMP - Bab 2</p>
     </header>
 
     <div class="status-bar">
-      <div>Waktu: <span id="timer" class="status-value">00:00</span></div>
-      <div>Terisi: <span id="progress" class="status-value">0 / 8</span></div>
-      <div>Skor: <span id="score" class="status-value">0</span></div>
+      <div>Soal: <span id="soal-num" class="status-val">1 / 8</span></div>
+      <div>Waktu: <span id="timer" class="status-val">00:00</span></div>
+      <div>Skor: <span id="score" class="status-val">0</span></div>
     </div>
 
-    <div class="main-content">
-      <div class="grid-container">
-        <div class="grid-wrapper">
-          <div id="grid" class="grid"></div>
-        </div>
+    <div class="game-body">
+      <div class="question-box">
+        <span id="clue-tag" class="clue-badge">Petunjuk</span>
+        <div id="question-text" class="question-text">Memuat pertanyaan...</div>
       </div>
 
-      <div class="clues-container">
-        <div class="clue-section">
-          <h3>Mendatar</h3>
-          <ul id="across-clues" class="clue-list"></ul>
-        </div>
-        <div class="clue-section">
-          <h3>Menurun</h3>
-          <ul id="down-clues" class="clue-list"></ul>
-        </div>
-      </div>
+      <!-- Kotak Isian Huruf -->
+      <div id="answer-slots" class="answer-slots"></div>
+
+      <!-- Kotak Huruf Acak Pilihan -->
+      <div id="letters-container" class="letters-container"></div>
+
+      <div id="feedback" class="feedback"></div>
     </div>
 
-    <div class="controls">
-      <button id="btn-check" class="btn btn-primary">✓ Cek Jawaban</button>
-      <button id="btn-hint" class="btn btn-accent">💡 Buka 1 Huruf</button>
-      <button id="btn-reset" class="btn btn-secondary">🔄 Mulai Ulang</button>
+    <div class="action-bar">
+      <button id="btn-hapus" class="btn btn-secondary">⌫ Hapus Huruf</button>
+      <button id="btn-hint" class="btn btn-accent">💡 Petunjuk</button>
+      <button id="btn-reset" class="btn btn-secondary">🔄 Mulai Baru</button>
     </div>
   </div>
 
-  <input type="text" id="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
-
-  <div id="modal" class="modal-overlay">
+  <!-- Pop Up Hasil Akhir -->
+  <div id="modal-selesai" class="modal-overlay">
     <div class="modal-card">
-      <h2 class="modal-title">🎉 Selamat, Mumtaz!</h2>
-      <p>Kamu telah menyelesaikan TTS Asmaulhusna dengan benar!</p>
-      <div class="modal-stats">
-        <p>Waktu Pengerjaan: <strong id="final-time">00:00</strong></p>
-        <p>Total Skor: <strong id="final-score">100</strong> / 100</p>
+      <h2>🎉 Mumtaz! Hebat Sekali!</h2>
+      <p>Kamu telah menuntaskan seluruh tantangan materi Meneladani Asmaulhusna.</p>
+      <div class="modal-score">
+        <p>Total Skor: <strong id="final-score" style="color:var(--primary); font-size:1.4rem;">0</strong> / 100</p>
+        <p>Waktu: <strong id="final-time">00:00</strong></p>
       </div>
-      <button id="btn-close-modal" class="btn btn-primary" style="width:100%;">Mainkan Lagi</button>
+      <button id="btn-main-lagi" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px;">Mainkan Lagi</button>
     </div>
   </div>
 
   <script>
-    // 8 Kata PAI Kelas 7 Bab 2 yang 100% klop matematis
-    const WORDS = [
-      { id: 1, word: "ALBASIR", direction: "across", r: 1, c: 1, clue: "Asmaulhusna yang berarti Allah Maha Melihat segala perbuatan." },
-      { id: 2, word: "SALAT", direction: "across", r: 4, c: 2, clue: "Ibadah wajib tiang agama peneguh keimanan dalam kehidupan sehari-hari." },
-      { id: 3, word: "ZIKIR", direction: "across", r: 7, c: 5, clue: "Amalan memperbanyak mengingat Allah untuk meneguhkan iman." },
-      { id: 4, word: "HUSNA", direction: "across", r: 9, c: 4, clue: "Arti sebutan nama-nama Allah yang paling 'baik' atau 'indah'." },
-      
-      { id: 1, word: "ALALIM", direction: "down", r: 1, c: 4, clue: "Asmaulhusna yang berarti Allah Maha Mengetahui yang gaib dan nyata." },
-      { id: 5, word: "ASSAMI", direction: "down", r: 1, c: 6, clue: "Asmaulhusna yang berarti Allah Maha Mendengar segala bisikan dan doa." },
-      { id: 6, word: "TAHA", direction: "down", r: 4, c: 6, clue: "Nama surah ayat 52 dalil ilmu Allah tidak pernah tersalah atau lupa." },
-      { id: 7, word: "ALKHABIR", direction: "down", r: 3, c: 8, clue: "Asmaulhusna yang berarti Allah Mahateliti hingga sekecil apapun." }
+    // Bank Soal Materi PAI Kelas 7 Bab 2 (Asmaulhusna & Pengamalannya)
+    const QUESTIONS = [
+      {
+        tag: "Asmaulhusna 1",
+        question: "Asmaulhusna yang berarti Allah Maha Mengetahui segala sesuatu, baik yang tampak maupun gaib (Q.S. Taha: 52):",
+        answer: "ALALIM"
+      },
+      {
+        tag: "Asmaulhusna 2",
+        question: "Asmaulhusna yang berarti Allah Mahateliti hingga sekecil apapun perbuatan makhluk-Nya (Q.S. At-Taubah: 16):",
+        answer: "ALKHABIR"
+      },
+      {
+        tag: "Asmaulhusna 3",
+        question: "Asmaulhusna yang berarti Allah Maha Mendengar segala bisikan hati, rintihan doa, dan ucapan (Q.S. Asy-Syura: 11):",
+        answer: "ASSAMI"
+      },
+      {
+        tag: "Asmaulhusna 4",
+        question: "Asmaulhusna yang berarti Allah Maha Melihat segala gerak-gerik makhluk tanpa terkecuali (Q.S. Al-Hujurat: 18):",
+        answer: "ALBASIR"
+      },
+      {
+        tag: "Makna Bahasa",
+        question: "Arti dari kata 'Husna' dalam ungkapan Asmaulhusna adalah nama-nama yang:",
+        answer: "INDAH"
+      },
+      {
+        tag: "Makna Bahasa",
+        question: "Kata dalam bahasa Arab yang berarti 'nama-nama':",
+        answer: "ASMA"
+      },
+      {
+        tag: "Pengamalan",
+        question: "Ibadah wajib tiang agama yang harus diperbaiki untuk meneguhkan keimanan sehari-hari:",
+        answer: "SALAT"
+      },
+      {
+        tag: "Pengamalan",
+        question: "Amalan memperbanyak mengingat nama dan kebesaran Allah Swt. untuk meneguhkan iman:",
+        answer: "ZIKIR"
+      }
     ];
 
-    const GRID_SIZE = 11;
-    let gridData = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(null));
-    let userAnswers = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
-    let activeWord = WORDS[0];
-    let selectedCell = { r: 1, c: 1 };
+    let currentIndex = 0;
+    let score = 0;
     let timerSeconds = 0;
     let timerInterval = null;
+    let currentInputs = [];
+    let scrambledLetters = [];
 
-    function initGrid() {
-      WORDS.forEach(w => {
-        let { r, c, direction, word, id } = w;
-        for (let i = 0; i < word.length; i++) {
-          let currR = direction === 'across' ? r : r + i;
-          let currC = direction === 'across' ? c + i : c;
-          
-          if (!gridData[currR][currC]) {
-            gridData[currR][currC] = {
-              correctLetter: word[i],
-              words: [],
-              clueNumber: (i === 0) ? id : null
-            };
-          }
-          if (i === 0 && !gridData[currR][currC].clueNumber) {
-            gridData[currR][currC].clueNumber = id;
-          }
-          gridData[currR][currC].words.push(w);
-        }
-      });
-    }
+    const questionTextEl = document.getElementById('question-text');
+    const clueTagEl = document.getElementById('clue-tag');
+    const answerSlotsEl = document.getElementById('answer-slots');
+    const lettersContainerEl = document.getElementById('letters-container');
+    const feedbackEl = document.getElementById('feedback');
+    const soalNumEl = document.getElementById('soal-num');
+    const scoreEl = document.getElementById('score');
+    const timerEl = document.getElementById('timer');
 
-    function renderGrid() {
-      const gridEl = document.getElementById('grid');
-      gridEl.innerHTML = '';
-
-      for (let r = 0; r < GRID_SIZE; r++) {
-        for (let c = 0; c < GRID_SIZE; c++) {
-          const cellData = gridData[r][c];
-          const cellEl = document.createElement('div');
-          cellEl.className = 'cell';
-          cellEl.dataset.r = r;
-          cellEl.dataset.c = c;
-
-          if (cellData) {
-            cellEl.classList.add('playable');
-            
-            if (cellData.clueNumber) {
-              const numSpan = document.createElement('span');
-              numSpan.className = 'cell-number';
-              numSpan.textContent = cellData.clueNumber;
-              cellEl.appendChild(numSpan);
-            }
-
-            const letterSpan = document.createElement('span');
-            letterSpan.className = 'cell-letter';
-            letterSpan.textContent = userAnswers[r][c];
-            cellEl.appendChild(letterSpan);
-
-            cellEl.addEventListener('click', () => handleCellClick(r, c));
-          }
-          gridEl.appendChild(cellEl);
-        }
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
       }
-      updateHighlights();
+      return arr;
     }
 
-    function renderClues() {
-      const acrossList = document.getElementById('across-clues');
-      const downList = document.getElementById('down-clues');
-      acrossList.innerHTML = '';
-      downList.innerHTML = '';
+    function loadQuestion(index) {
+      feedbackEl.textContent = '';
+      feedbackEl.className = 'feedback';
+      const q = QUESTIONS[index];
 
-      WORDS.forEach((w, index) => {
-        const item = document.createElement('li');
-        item.className = 'clue-item';
-        item.dataset.wordIndex = index;
-        item.innerHTML = `<span class="clue-num">${w.id}.</span><span>${w.clue} (${w.word.length} huruf)</span>`;
-        item.addEventListener('click', () => selectWord(w));
+      clueTagEl.textContent = q.tag;
+      questionTextEl.textContent = q.question;
+      soalNumEl.textContent = `${index + 1} / ${QUESTIONS.length}`;
 
-        if (w.direction === 'across') {
-          acrossList.appendChild(item);
+      currentInputs = [];
+      answerSlotsEl.innerHTML = '';
+      lettersContainerEl.innerHTML = '';
+
+      // Siapkan slot jawaban kosong
+      for (let i = 0; i < q.answer.length; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'slot';
+        slot.dataset.index = i;
+        slot.addEventListener('click', () => removeLetterAt(i));
+        answerSlotsEl.appendChild(slot);
+      }
+
+      // Acak huruf-huruf dari jawaban
+      scrambledLetters = shuffle(q.answer.split('')).map((char, i) => ({ id: i, char: char, used: false }));
+
+      scrambledLetters.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'letter-btn';
+        btn.textContent = item.char;
+        btn.dataset.id = item.id;
+        btn.addEventListener('click', () => selectLetter(item));
+        lettersContainerEl.appendChild(btn);
+      });
+    }
+
+    function selectLetter(item) {
+      const q = QUESTIONS[currentIndex];
+      if (currentInputs.length >= q.answer.length) return;
+
+      item.used = true;
+      currentInputs.push(item);
+
+      const btn = lettersContainerEl.querySelector(`button[data-id="${item.id}"]`);
+      if (btn) btn.classList.add('used');
+
+      updateSlots();
+
+      // Jika semua slot sudah terisi, cek otomatis
+      if (currentInputs.length === q.answer.length) {
+        checkAnswer();
+      }
+    }
+
+    function removeLetterAt(index) {
+      if (index >= currentInputs.length) return;
+      const removed = currentInputs.splice(index, 1)[0];
+      removed.used = false;
+
+      const btn = lettersContainerEl.querySelector(`button[data-id="${removed.id}"]`);
+      if (btn) btn.classList.remove('used');
+
+      updateSlots();
+    }
+
+    function deleteLastLetter() {
+      if (currentInputs.length === 0) return;
+      removeLetterAt(currentInputs.length - 1);
+    }
+
+    function updateSlots() {
+      const slots = answerSlotsEl.querySelectorAll('.slot');
+      slots.forEach((slot, idx) => {
+        if (idx < currentInputs.length) {
+          slot.textContent = currentInputs[idx].char;
+          slot.classList.add('filled');
         } else {
-          downList.appendChild(item);
+          slot.textContent = '';
+          slot.classList.remove('filled');
         }
       });
     }
 
-    function handleCellClick(r, c) {
-      const cellData = gridData[r][c];
-      if (!cellData) return;
+    function checkAnswer() {
+      const q = QUESTIONS[currentIndex];
+      const userWord = currentInputs.map(item => item.char).join('');
 
-      if (selectedCell.r === r && selectedCell.c === c) {
-        if (cellData.words.length > 1) {
-          activeWord = (activeWord === cellData.words[0]) ? cellData.words[1] : cellData.words[0];
-        }
+      if (userWord === q.answer) {
+        feedbackEl.textContent = '✓ Benar Sekali! Jawaban Tepat!';
+        feedbackEl.className = 'feedback correct';
+        score += Math.round(100 / QUESTIONS.length);
+        scoreEl.textContent = score;
+
+        setTimeout(() => {
+          if (currentIndex < QUESTIONS.length - 1) {
+            currentIndex++;
+            loadQuestion(currentIndex);
+          } else {
+            finishGame();
+          }
+        }, 1100);
       } else {
-        selectedCell = { r, c };
-        const match = cellData.words.find(w => w === activeWord);
-        if (!match) activeWord = cellData.words[0];
-      }
-
-      updateHighlights();
-      focusHiddenInput();
-    }
-
-    function selectWord(wordObj) {
-      activeWord = wordObj;
-      selectedCell = { r: wordObj.r, c: wordObj.c };
-      updateHighlights();
-      focusHiddenInput();
-    }
-
-    function updateHighlights() {
-      document.querySelectorAll('.cell.playable').forEach(el => {
-        el.classList.remove('selected', 'highlighted');
-      });
-
-      document.querySelectorAll('.clue-item').forEach(el => {
-        el.classList.remove('active');
-      });
-
-      const activeIndex = WORDS.indexOf(activeWord);
-      const activeClueEl = document.querySelector(`.clue-item[data-word-index="${activeIndex}"]`);
-      if (activeClueEl) {
-        activeClueEl.classList.add('active');
-        activeClueEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-
-      for (let i = 0; i < activeWord.word.length; i++) {
-        let r = activeWord.direction === 'across' ? activeWord.r : activeWord.r + i;
-        let c = activeWord.direction === 'across' ? activeWord.c + i : activeWord.c;
-        const cellEl = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-        if (cellEl) cellEl.classList.add('highlighted');
-      }
-
-      const currentCellEl = document.querySelector(`.cell[data-r="${selectedCell.r}"][data-c="${selectedCell.c}"]`);
-      if (currentCellEl) currentCellEl.classList.add('selected');
-    }
-
-    function focusHiddenInput() {
-      document.getElementById('hidden-input').focus();
-    }
-
-    function setLetter(r, c, letter) {
-      userAnswers[r][c] = letter;
-      const cellEl = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-      if (cellEl) {
-        const letterSpan = cellEl.querySelector('.cell-letter');
-        if (letterSpan) letterSpan.textContent = letter;
-        cellEl.classList.remove('wrong');
-      }
-      updateProgress();
-    }
-
-    function moveCursor(step) {
-      const { r, c } = selectedCell;
-      let nextR = activeWord.direction === 'across' ? r : r + step;
-      let nextC = activeWord.direction === 'across' ? c + step : c;
-
-      const startR = activeWord.r;
-      const startC = activeWord.c;
-      const len = activeWord.word.length;
-
-      const isInWord = (activeWord.direction === 'across')
-        ? (nextR === startR && nextC >= startC && nextC < startC + len)
-        : (nextC === startC && nextR >= startR && nextR < startR + len);
-
-      if (isInWord) {
-        selectedCell = { r: nextR, c: nextC };
-        updateHighlights();
-      }
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace') {
-        e.preventDefault();
-        if (userAnswers[selectedCell.r][selectedCell.c] !== '') {
-          setLetter(selectedCell.r, selectedCell.c, '');
-        } else {
-          moveCursor(-1);
-          setLetter(selectedCell.r, selectedCell.c, '');
-        }
-      } else if (e.key === 'ArrowRight') {
-        if (selectedCell.c + 1 < GRID_SIZE && gridData[selectedCell.r][selectedCell.c + 1]) {
-          selectedCell.c++;
-          updateHighlights();
-        }
-      } else if (e.key === 'ArrowLeft') {
-        if (selectedCell.c - 1 >= 0 && gridData[selectedCell.r][selectedCell.c - 1]) {
-          selectedCell.c--;
-          updateHighlights();
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (selectedCell.r + 1 < GRID_SIZE && gridData[selectedCell.r + 1][selectedCell.c]) {
-          selectedCell.r++;
-          updateHighlights();
-        }
-      } else if (e.key === 'ArrowUp') {
-        if (selectedCell.r - 1 >= 0 && gridData[selectedCell.r - 1][selectedCell.c]) {
-          selectedCell.r--;
-          updateHighlights();
-        }
-      } else if (/^[a-zA-Z]$/.test(e.key)) {
-        e.preventDefault();
-        setLetter(selectedCell.r, selectedCell.c, e.key.toUpperCase());
-        moveCursor(1);
-      }
-    });
-
-    const hiddenInput = document.getElementById('hidden-input');
-    hiddenInput.addEventListener('input', (e) => {
-      const val = e.target.value;
-      if (val) {
-        const char = val.slice(-1).toUpperCase();
-        if (/^[A-Z]$/.test(char)) {
-          setLetter(selectedCell.r, selectedCell.c, char);
-          moveCursor(1);
-        }
-      }
-      hiddenInput.value = '';
-    });
-
-    function checkAnswers() {
-      let totalLetters = 0;
-      let correctLetters = 0;
-      let allCorrect = true;
-
-      for (let r = 0; r < GRID_SIZE; r++) {
-        for (let c = 0; c < GRID_SIZE; c++) {
-          if (gridData[r][c]) {
-            totalLetters++;
-            const userChar = userAnswers[r][c];
-            const correctChar = gridData[r][c].correctLetter;
-            const cellEl = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-
-            if (userChar === correctChar) {
-              correctLetters++;
-              cellEl.classList.remove('wrong');
-              cellEl.classList.add('correct');
-            } else if (userChar !== '') {
-              allCorrect = false;
-              cellEl.classList.remove('correct');
-              cellEl.classList.add('wrong');
-            } else {
-              allCorrect = false;
-              cellEl.classList.remove('correct', 'wrong');
-            }
-          }
-        }
-      }
-
-      const score = Math.round((correctLetters / totalLetters) * 100);
-      document.getElementById('score').textContent = score;
-
-      if (allCorrect && correctLetters === totalLetters) {
-        clearInterval(timerInterval);
-        document.getElementById('final-time').textContent = document.getElementById('timer').textContent;
-        document.getElementById('final-score').textContent = score;
-        document.getElementById('modal').style.display = 'flex';
+        feedbackEl.textContent = '✕ Susunan huruf masih kurang tepat. Coba periksa lagi!';
+        feedbackEl.className = 'feedback wrong';
       }
     }
 
     function giveHint() {
-      const { r, c } = selectedCell;
-      if (gridData[r][c]) {
-        setLetter(r, c, gridData[r][c].correctLetter);
-        const cellEl = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
-        cellEl.classList.remove('wrong');
-        cellEl.classList.add('correct');
-        moveCursor(1);
-      }
-    }
+      const q = QUESTIONS[currentIndex];
+      const correctWord = q.answer;
 
-    function updateProgress() {
-      let completedWords = 0;
-      WORDS.forEach(w => {
-        let complete = true;
-        for (let i = 0; i < w.word.length; i++) {
-          let r = w.direction === 'across' ? w.r : w.r + i;
-          let c = w.direction === 'across' ? w.c + i : w.c;
-          if (userAnswers[r][c] !== w.word[i]) {
-            complete = false;
-            break;
+      // Cari posisi pertama yang salah atau kosong
+      for (let i = 0; i < correctWord.length; i++) {
+        const expectedChar = correctWord[i];
+        const currentChar = currentInputs[i] ? currentInputs[i].char : null;
+
+        if (currentChar !== expectedChar) {
+          // Reset huruf yang salah di posisi ini dan setelahnya
+          while (currentInputs.length > i) {
+            deleteLastLetter();
           }
+
+          // Cari tombol huruf yang sesuai dan belum terpakai
+          const candidate = scrambledLetters.find(l => !l.used && l.char === expectedChar);
+          if (candidate) {
+            selectLetter(candidate);
+          }
+          break;
         }
-        if (complete) completedWords++;
-      });
-      document.getElementById('progress').textContent = completedWords + ' / ' + WORDS.length;
+      }
     }
 
     function startTimer() {
@@ -683,36 +518,44 @@
         timerSeconds++;
         const mins = String(Math.floor(timerSeconds / 60)).padStart(2, '0');
         const secs = String(timerSeconds % 60).padStart(2, '0');
-        document.getElementById('timer').textContent = mins + ':' + secs;
+        timerEl.textContent = `${mins}:${secs}`;
       }, 1000);
     }
 
+    function finishGame() {
+      clearInterval(timerInterval);
+      document.getElementById('final-score').textContent = score;
+      document.getElementById('final-time').textContent = timerEl.textContent;
+      document.getElementById('modal-selesai').style.display = 'flex';
+    }
+
     function resetGame() {
-      userAnswers = Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(''));
-      document.querySelectorAll('.cell.playable').forEach(el => {
-        el.classList.remove('correct', 'wrong');
-        const span = el.querySelector('.cell-letter');
-        if (span) span.textContent = '';
-      });
-      document.getElementById('score').textContent = '0';
-      document.getElementById('modal').style.display = 'none';
-      selectedCell = { r: WORDS[0].r, c: WORDS[0].c };
-      activeWord = WORDS[0];
-      updateProgress();
-      updateHighlights();
+      currentIndex = 0;
+      score = 0;
+      scoreEl.textContent = '0';
+      document.getElementById('modal-selesai').style.display = 'none';
+      loadQuestion(0);
       startTimer();
     }
 
-    document.getElementById('btn-check').addEventListener('click', checkAnswers);
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace') {
+        deleteLastLetter();
+      } else if (/^[a-zA-Z]$/.test(e.key)) {
+        const char = e.key.toUpperCase();
+        const candidate = scrambledLetters.find(l => !l.used && l.char === char);
+        if (candidate) selectLetter(candidate);
+      }
+    });
+
+    document.getElementById('btn-hapus').addEventListener('click', deleteLastLetter);
     document.getElementById('btn-hint').addEventListener('click', giveHint);
     document.getElementById('btn-reset').addEventListener('click', resetGame);
-    document.getElementById('btn-close-modal').addEventListener('click', resetGame);
+    document.getElementById('btn-main-lagi').addEventListener('click', resetGame);
 
-    // Inisialisasi awal saat halaman dibuka
-    initGrid();
-    renderGrid();
-    renderClues();
-    startTimer();
+    // Jalankan Game
+    resetGame();
   </script>
 </body>
 </html>
